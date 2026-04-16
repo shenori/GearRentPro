@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.gearrentpro.controller.DashboardController"
+            styleClass="dashboard">
+    
+    <!-- Top Menu Bar -->
+    <top>
+        <VBox>
+            <MenuBar>
+                <Menu text="File">
+                    <MenuItem text="Logout" onAction="#handleLogout"/>
+                    <MenuItem text="Exit" onAction="#handleExit"/>
+                </Menu>
+                <Menu fx:id="branchMenu" text="Branches">
+                    <MenuItem text="Manage Branches" onAction="#openBranches"/>
+                </Menu>
+                <Menu text="Equipment">
+                    <MenuItem text="Categories" onAction="#openCategories"/>
+                    <MenuItem text="Equipment" onAction="#openEquipment"/>
+                </Menu>
+                <Menu text="Customers">
+                    <MenuItem text="Manage Customers" onAction="#openCustomers"/>
+                    <MenuItem text="Membership Config" onAction="#openMembership"/>
+                </Menu>
+                <Menu text="Rentals">
+                    <MenuItem text="Reservations" onAction="#openReservations"/>
+                    <MenuItem text="Active Rentals" onAction="#openRentals"/>
+                    <MenuItem text="Process Return" onAction="#openReturns"/>
+                    <MenuItem text="Overdue Rentals" onAction="#openOverdue"/>
+                </Menu>
+                <Menu text="Reports">
+                    <MenuItem text="Revenue Report" onAction="#openRevenueReport"/>
+                    <MenuItem text="Utilization Report" onAction="#openUtilizationReport"/>
+                </Menu>
+            </MenuBar>
+            <HBox styleClass="toolbar" spacing="10" alignment="CENTER_LEFT">
+                <Label fx:id="welcomeLabel" text="Welcome"/>
+                <Label fx:id="branchLabel" text="Branch: "/>
+            </HBox>
+        </VBox>
+    </top>
+    
+    <!-- Center Content Area -->
+    <center>
+        <StackPane fx:id="contentArea">
+            <Label text="Welcome to GearRent Pro" style="-fx-font-size: 24px;"/>
+        </StackPane>
+    </center>
+    
+    <!-- Bottom Status Bar -->
+    <bottom>
+        <HBox styleClass="status-bar" spacing="10">
+            <Label fx:id="statusLabel" text="Ready"/>
+        </HBox>
+    </bottom>
+    
+</BorderPane>

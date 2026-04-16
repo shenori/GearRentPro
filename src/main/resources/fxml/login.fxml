@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox alignment="CENTER" spacing="20" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.gearrentpro.controller.LoginController"
+      styleClass="login-container">
+    
+    <padding>
+        <Insets top="50" right="50" bottom="50" left="50"/>
+    </padding>
+    
+    <Label text="GearRent Pro" styleClass="title-label"/>
+    <Label text="Equipment Rental Management System" styleClass="subtitle-label"/>
+    
+    <VBox spacing="10" alignment="CENTER" maxWidth="300">
+        <TextField fx:id="usernameField" promptText="Username" styleClass="input-field"/>
+        <PasswordField fx:id="passwordField" promptText="Password" styleClass="input-field"/>
+        <Label fx:id="errorLabel" styleClass="error-label"/>
+        <Button text="Login" onAction="#handleLogin" styleClass="primary-button" maxWidth="Infinity"/>
+    </VBox>
+    
+</VBox>
