@@ -1,4 +1,4 @@
-package main.java.com.gearrentpro.service;
+package com.gearrentpro.service;
 
 public class ReservationService {
     

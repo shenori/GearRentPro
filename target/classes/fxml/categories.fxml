@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.gearrentpro.controller.CategoryController"
+            styleClass="content-pane">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <top>
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <Label text="Equipment Categories" styleClass="page-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="+ Add New Category" onAction="#handleAddCategory" styleClass="primary-button"/>
+        </HBox>
+    </top>
+
+    <center>
+        <HBox spacing="20">
+            <padding>
+                <Insets top="20"/>
+            </padding>
+
+            <!-- Table -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <TableView fx:id="categoryTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId" text="ID" prefWidth="80">
+                            <cellValueFactory><PropertyValueFactory property="categoryId"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colName" text="Name" prefWidth="120">
+                            <cellValueFactory><PropertyValueFactory property="name"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colDescription" text="Description" prefWidth="180">
+                            <cellValueFactory><PropertyValueFactory property="description"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colPriceFactor" text="Price Factor" prefWidth="100">
+                            <cellValueFactory><PropertyValueFactory property="basePriceFactor"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colWeekendMultiplier" text="Weekend ×" prefWidth="100">
+                            <cellValueFactory><PropertyValueFactory property="weekendMultiplier"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colLateFee" text="Late Fee/Day" prefWidth="100">
+                            <cellValueFactory><PropertyValueFactory property="defaultLateFeePerDay"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colStatus" text="Status" prefWidth="80">
+                            <cellValueFactory><PropertyValueFactory property="active"/></cellValueFactory>
+                        </TableColumn>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- Form -->
+            <VBox spacing="15" minWidth="350" styleClass="form-panel">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+
+                <Label fx:id="formTitle" text="Add New Category" styleClass="form-title"/>
+
+                <VBox spacing="5">
+                    <Label text="Category ID"/>
+                    <TextField fx:id="txtCategoryId" editable="false" styleClass="input-field"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Category Name *"/>
+                    <TextField fx:id="txtName" promptText="e.g., Camera, Drone, Audio" styleClass="input-field"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Description"/>
+                    <TextArea fx:id="txtDescription" promptText="Brief description" 
+                              prefRowCount="2" styleClass="input-field"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Base Price Factor *"/>
+                    <TextField fx:id="txtPriceFactor" promptText="e.g., 1.0, 1.5, 2.0" styleClass="input-field"/>
+                    <Label text="(Multiplies equipment's daily base price)" styleClass="hint-label"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Weekend Multiplier *"/>
+                    <TextField fx:id="txtWeekendMultiplier" promptText="e.g., 1.0, 1.2, 1.5" styleClass="input-field"/>
+                    <Label text="(Applied on Sat/Sun rentals)" styleClass="hint-label"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Default Late Fee Per Day (LKR)"/>
+                    <TextField fx:id="txtLateFee" promptText="e.g., 500" styleClass="input-field"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <CheckBox fx:id="chkActive" text="Active" selected="true"/>
+                </VBox>
+
+                <Label fx:id="lblError" styleClass="error-label" wrapText="true"/>
+
+                <HBox spacing="10">
+                    <Button fx:id="btnSave" text="Save" onAction="#handleSave" styleClass="primary-button"/>
+                    <Button fx:id="btnUpdate" text="Update" onAction="#handleUpdate" 
+                            styleClass="primary-button" visible="false" managed="false"/>
+                    <Button text="Clear" onAction="#handleClear" styleClass="secondary-button"/>
+                    <Button fx:id="btnDelete" text="Delete" onAction="#handleDelete" 
+                            styleClass="danger-button" visible="false" managed="false"/>
+                </HBox>
+            </VBox>
+        </HBox>
+    </center>
+
+</BorderPane>

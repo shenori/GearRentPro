@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.gearrentpro.controller.EquipmentController"
+            styleClass="content-pane">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <top>
+        <VBox spacing="15">
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <Label text="Equipment Management" styleClass="page-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="+ Add New Equipment" onAction="#handleAddEquipment" styleClass="primary-button"/>
+            </HBox>
+            
+            <!-- Search/Filter Bar -->
+            <HBox spacing="15" alignment="CENTER_LEFT" styleClass="filter-bar">
+                <Label text="Filter:"/>
+                
+                <ComboBox fx:id="cmbFilterBranch" promptText="All Branches" prefWidth="150"/>
+                <ComboBox fx:id="cmbFilterCategory" promptText="All Categories" prefWidth="150"/>
+                <ComboBox fx:id="cmbFilterStatus" promptText="All Status" prefWidth="150"/>
+                
+                <TextField fx:id="txtSearch" promptText="Search brand/model..." prefWidth="200"/>
+                <Button text="Search" onAction="#handleSearch" styleClass="secondary-button"/>
+                <Button text="Clear Filters" onAction="#handleClearFilters" styleClass="secondary-button"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <HBox spacing="20">
+            <padding>
+                <Insets top="20"/>
+            </padding>
+
+            <!-- Table -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <TableView fx:id="equipmentTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId" text="ID" prefWidth="70">
+                            <cellValueFactory><PropertyValueFactory property="equipmentId"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colCategory" text="Category" prefWidth="100">
+                            <cellValueFactory><PropertyValueFactory property="categoryName"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colBranch" text="Branch" prefWidth="100">
+                            <cellValueFactory><PropertyValueFactory property="branchName"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colBrand" text="Brand" prefWidth="100">
+                            <cellValueFactory><PropertyValueFactory property="brand"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colModel" text="Model" prefWidth="150">
+                            <cellValueFactory><PropertyValueFactory property="model"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colYear" text="Year" prefWidth="60">
+                            <cellValueFactory><PropertyValueFactory property="purchaseYear"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colPrice" text="Daily Price" prefWidth="100">
+                            <cellValueFactory><PropertyValueFactory property="dailyBasePrice"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colDeposit" text="Deposit" prefWidth="100">
+                            <cellValueFactory><PropertyValueFactory property="securityDeposit"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colStatus" text="Status" prefWidth="120">
+                            <cellValueFactory><PropertyValueFactory property="status"/></cellValueFactory>
+                        </TableColumn>
+                    </columns>
+                </TableView>
+                
+                <Label fx:id="lblRecordCount" text="0 records found"/>
+            </VBox>
+
+            <!-- Form -->
+            <VBox spacing="12" minWidth="380" styleClass="form-panel">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+
+                <Label fx:id="formTitle" text="Add New Equipment" styleClass="form-title"/>
+
+                <VBox spacing="5">
+                    <Label text="Equipment ID"/>
+                    <TextField fx:id="txtEquipmentId" editable="false" styleClass="input-field"/>
+                </VBox>
+
+                <HBox spacing="10">
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Category *"/>
+                        <ComboBox fx:id="cmbCategory" maxWidth="Infinity" styleClass="input-field"/>
+                    </VBox>
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Branch *"/>
+                        <ComboBox fx:id="cmbBranch" maxWidth="Infinity" styleClass="input-field"/>
+                    </VBox>
+                </HBox>
+
+                <HBox spacing="10">
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Brand *"/>
+                        <TextField fx:id="txtBrand" promptText="e.g., Canon, Sony" styleClass="input-field"/>
+                    </VBox>
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Purchase Year *"/>
+                        <TextField fx:id="txtYear" promptText="e.g., 2023" styleClass="input-field"/>
+                    </VBox>
+                </HBox>
+
+                <VBox spacing="5">
+                    <Label text="Model *"/>
+                    <TextField fx:id="txtModel" promptText="e.g., EOS R5, A7 IV" styleClass="input-field"/>
+                </VBox>
+
+                <HBox spacing="10">
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Daily Base Price (LKR) *"/>
+                        <TextField fx:id="txtPrice" promptText="e.g., 5000" styleClass="input-field"/>
+                    </VBox>
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Security Deposit (LKR) *"/>
+                        <TextField fx:id="txtDeposit" promptText="e.g., 50000" styleClass="input-field"/>
+                    </VBox>
+                </HBox>
+
+                <VBox spacing="5">
+                    <Label text="Status *"/>
+                    <ComboBox fx:id="cmbStatus" maxWidth="Infinity" styleClass="input-field"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Description"/>
+                    <TextArea fx:id="txtDescription" promptText="Additional details..." 
+                              prefRowCount="2" styleClass="input-field"/>
+                </VBox>
+
+                <Label fx:id="lblError" styleClass="error-label" wrapText="true"/>
+
+                <HBox spacing="10">
+                    <Button fx:id="btnSave" text="Save" onAction="#handleSave" styleClass="primary-button"/>
+                    <Button fx:id="btnUpdate" text="Update" onAction="#handleUpdate" 
+                            styleClass="primary-button" visible="false" managed="false"/>
+                    <Button text="Clear" onAction="#handleClear" styleClass="secondary-button"/>
+                    <Button fx:id="btnDelete" text="Delete" onAction="#handleDelete" 
+                            styleClass="danger-button" visible="false" managed="false"/>
+                </HBox>
+            </VBox>
+        </HBox>
+    </center>
+
+</BorderPane>

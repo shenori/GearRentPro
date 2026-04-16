@@ -1,4 +1,4 @@
-package main.java.com.gearrentpro.dao;
+package com.gearrentpro.dao;
 
 public class ReservationDAO {
     

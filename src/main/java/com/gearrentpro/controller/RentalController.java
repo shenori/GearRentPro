@@ -1,4 +1,4 @@
-package main.java.com.gearrentpro.controller;
+package com.gearrentpro.controller;
 
 public class RentalController {
     

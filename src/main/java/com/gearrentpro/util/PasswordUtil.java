@@ -1,4 +1,4 @@
-package main.java.com.gearrentpro.util;
+package com.gearrentpro.util;
 
 public class PasswordUtil {
     

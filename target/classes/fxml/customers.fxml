@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.gearrentpro.controller.CustomerController"
+            styleClass="content-pane">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <top>
+        <VBox spacing="15">
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <Label text="Customer Management" styleClass="page-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="+ Add New Customer" onAction="#handleAddCustomer" styleClass="primary-button"/>
+            </HBox>
+            
+            <!-- Search/Filter Bar -->
+            <HBox spacing="15" alignment="CENTER_LEFT" styleClass="filter-bar">
+                <Label text="Search:"/>
+                <TextField fx:id="txtSearch" promptText="Search name, NIC, phone..." prefWidth="250"/>
+                <Label text="Membership:"/>
+                <ComboBox fx:id="cmbFilterMembership" promptText="All Levels" prefWidth="150"/>
+                <Button text="Search" onAction="#handleSearch" styleClass="secondary-button"/>
+                <Button text="Clear" onAction="#handleClearFilters" styleClass="secondary-button"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <HBox spacing="20">
+            <padding>
+                <Insets top="20"/>
+            </padding>
+
+            <!-- Table -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <TableView fx:id="customerTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId" text="ID" prefWidth="60">
+                            <cellValueFactory><PropertyValueFactory property="customerId"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colName" text="Name" prefWidth="150">
+                            <cellValueFactory><PropertyValueFactory property="name"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colNIC" text="NIC/Passport" prefWidth="120">
+                            <cellValueFactory><PropertyValueFactory property="nicPassport"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colContact" text="Contact" prefWidth="100">
+                            <cellValueFactory><PropertyValueFactory property="contactNo"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colEmail" text="Email" prefWidth="150">
+                            <cellValueFactory><PropertyValueFactory property="email"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colMembership" text="Membership" prefWidth="100">
+                            <cellValueFactory><PropertyValueFactory property="membershipLevel"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colStatus" text="Status" prefWidth="80">
+                            <cellValueFactory><PropertyValueFactory property="active"/></cellValueFactory>
+                        </TableColumn>
+                    </columns>
+                </TableView>
+                
+                <HBox spacing="20">
+                    <Label fx:id="lblRecordCount" text="0 records found"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblActiveDeposit" text="Active Deposits: LKR 0.00" styleClass="info-label"/>
+                </HBox>
+            </VBox>
+
+            <!-- Form -->
+            <VBox spacing="12" minWidth="380" styleClass="form-panel">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+
+                <Label fx:id="formTitle" text="Add New Customer" styleClass="form-title"/>
+
+                <VBox spacing="5">
+                    <Label text="Customer ID"/>
+                    <TextField fx:id="txtCustomerId" editable="false" styleClass="input-field"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Full Name *"/>
+                    <TextField fx:id="txtName" promptText="Enter full name" styleClass="input-field"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="NIC/Passport *"/>
+                    <TextField fx:id="txtNIC" promptText="e.g., 901234567V or 199012345678" styleClass="input-field"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Contact Number *"/>
+                    <TextField fx:id="txtContact" promptText="e.g., 077-1234567" styleClass="input-field"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Email"/>
+                    <TextField fx:id="txtEmail" promptText="email@example.com" styleClass="input-field"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Address"/>
+                    <TextArea fx:id="txtAddress" promptText="Full address" 
+                              prefRowCount="2" styleClass="input-field"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Membership Level"/>
+                    <ComboBox fx:id="cmbMembership" maxWidth="Infinity" styleClass="input-field"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <CheckBox fx:id="chkActive" text="Active" selected="true"/>
+                </VBox>
+
+                <Label fx:id="lblError" styleClass="error-label" wrapText="true"/>
+
+                <HBox spacing="10">
+                    <Button fx:id="btnSave" text="Save" onAction="#handleSave" styleClass="primary-button"/>
+                    <Button fx:id="btnUpdate" text="Update" onAction="#handleUpdate" 
+                            styleClass="primary-button" visible="false" managed="false"/>
+                    <Button text="Clear" onAction="#handleClear" styleClass="secondary-button"/>
+                    <Button fx:id="btnDelete" text="Delete" onAction="#handleDelete" 
+                            styleClass="danger-button" visible="false" managed="false"/>
+                </HBox>
+                
+                <Separator/>
+                
+                <Button text="View Rental History" onAction="#handleViewHistory" 
+                        styleClass="secondary-button" maxWidth="Infinity"/>
+            </VBox>
+        </HBox>
+    </center>
+
+</BorderPane>

@@ -1,4 +1,4 @@
-package main.java.com.gearrentpro.controller;
+package com.gearrentpro.controller;
 
 import com.gearrentpro.Main;
 import com.gearrentpro.entity.User;

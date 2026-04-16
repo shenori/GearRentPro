@@ -1,4 +1,4 @@
-package main.java.com.gearrentpro.entity;
+package com.gearrentpro.entity;
 
 public class Rental {
     
