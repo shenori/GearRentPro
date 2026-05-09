@@ -1,71 +1,38 @@
-package com.gearrentpro.entity;
-
-import java.time.LocalDateTime;
+package main.java.com.gearrentpro.entity;
 
 public class Customer {
     private String customerId;
-    private String name;
-    private String nicPassport;
-    private String contactNo;
+    private String fullName;
+    private String nic;
+    private String contact;
     private String email;
     private String address;
-    private MembershipLevel membershipLevel;
-    private boolean isActive;
-    private LocalDateTime createdAt;
+    private String membershipLevel;
 
-    public enum MembershipLevel {
-        REGULAR("Regular", 0),
-        SILVER("Silver", 5),
-        GOLD("Gold", 10);
+    public Customer() {}
 
-        private final String displayName;
-        private final int discountPercentage;
-
-        MembershipLevel(String displayName, int discountPercentage) {
-            this.displayName = displayName;
-            this.discountPercentage = discountPercentage;
-        }
-
-        public String getDisplayName() {
-            return displayName;
-        }
-
-        public int getDiscountPercentage() {
-            return discountPercentage;
-        }
-    }
-
-    // Constructors
-    public Customer() {
-        this.membershipLevel = MembershipLevel.REGULAR;
-        this.isActive = true;
-    }
-
-    public Customer(String customerId, String name, String nicPassport,
-                    String contactNo, String email, String address,
-                    MembershipLevel membershipLevel) {
+    public Customer(String customerId, String fullName, String nic, String contact,
+                    String email, String address, String membershipLevel) {
         this.customerId = customerId;
-        this.name = name;
-        this.nicPassport = nicPassport;
-        this.contactNo = contactNo;
+        this.fullName = fullName;
+        this.nic = nic;
+        this.contact = contact;
         this.email = email;
         this.address = address;
         this.membershipLevel = membershipLevel;
-        this.isActive = true;
     }
 
-    // Getters and Setters
     public String getCustomerId() { return customerId; }
     public void setCustomerId(String customerId) { this.customerId = customerId; }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
-    public String getNicPassport() { return nicPassport; }
-    public void setNicPassport(String nicPassport) { this.nicPassport = nicPassport; }
+    public String getNic() { return nic; }
+    public void setNic(String nic) { this.nic = nic; }
 
-    public String getContactNo() { return contactNo; }
-    public void setContactNo(String contactNo) { this.contactNo = contactNo; }
+    public String getContact() { return contact; }
+    public void setContact(String contact) { this.contact = contact; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
@@ -73,17 +40,9 @@ public class Customer {
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
 
-    public MembershipLevel getMembershipLevel() { return membershipLevel; }
-    public void setMembershipLevel(MembershipLevel membershipLevel) { this.membershipLevel = membershipLevel; }
-
-    public boolean isActive() { return isActive; }
-    public void setActive(boolean active) { isActive = active; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getMembershipLevel() { return membershipLevel; }
+    public void setMembershipLevel(String membershipLevel) { this.membershipLevel = membershipLevel; }
 
     @Override
-    public String toString() {
-        return name + " (" + customerId + ")";
-    }
+    public String toString() { return fullName; }
 }
