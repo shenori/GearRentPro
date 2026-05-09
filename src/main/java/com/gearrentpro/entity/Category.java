@@ -1,44 +1,35 @@
-package com.gearrentpro.entity;
+package main.java.com.gearrentpro.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 public class Category {
     private String categoryId;
-    private String name;
+    private String categoryName;
     private String description;
     private BigDecimal basePriceFactor;
     private BigDecimal weekendMultiplier;
-    private BigDecimal defaultLateFeePerDay;
+    private BigDecimal lateFeePerDay;
     private boolean isActive;
-    private LocalDateTime createdAt;
 
-    // Constructors
-    public Category() {
-        this.basePriceFactor = BigDecimal.ONE;
-        this.weekendMultiplier = BigDecimal.ONE;
-        this.defaultLateFeePerDay = new BigDecimal("500.00");
-        this.isActive = true;
-    }
+    public Category() {}
 
-    public Category(String categoryId, String name, String description,
+    public Category(String categoryId, String categoryName, String description,
                     BigDecimal basePriceFactor, BigDecimal weekendMultiplier,
-                    BigDecimal defaultLateFeePerDay) {
+                    BigDecimal lateFeePerDay, boolean isActive) {
         this.categoryId = categoryId;
-        this.name = name;
+        this.categoryName = categoryName;
         this.description = description;
         this.basePriceFactor = basePriceFactor;
         this.weekendMultiplier = weekendMultiplier;
-        this.defaultLateFeePerDay = defaultLateFeePerDay;
-        this.isActive = true;
+        this.lateFeePerDay = lateFeePerDay;
+        this.isActive = isActive;
     }
 
-    // Getters and Setters
     public String getCategoryId() { return categoryId; }
     public void setCategoryId(String categoryId) { this.categoryId = categoryId; }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getCategoryName() { return categoryName; }
+    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
@@ -49,17 +40,12 @@ public class Category {
     public BigDecimal getWeekendMultiplier() { return weekendMultiplier; }
     public void setWeekendMultiplier(BigDecimal weekendMultiplier) { this.weekendMultiplier = weekendMultiplier; }
 
-    public BigDecimal getDefaultLateFeePerDay() { return defaultLateFeePerDay; }
-    public void setDefaultLateFeePerDay(BigDecimal defaultLateFeePerDay) { this.defaultLateFeePerDay = defaultLateFeePerDay; }
+    public BigDecimal getLateFeePerDay() { return lateFeePerDay; }
+    public void setLateFeePerDay(BigDecimal lateFeePerDay) { this.lateFeePerDay = lateFeePerDay; }
 
     public boolean isActive() { return isActive; }
     public void setActive(boolean active) { isActive = active; }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
     @Override
-    public String toString() {
-        return name;
-    }
+    public String toString() { return categoryName; }
 }
