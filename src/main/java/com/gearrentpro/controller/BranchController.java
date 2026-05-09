@@ -1,262 +1,151 @@
-package com.gearrentpro.controller;
 
-import com.gearrentpro.entity.Branch;
-import com.gearrentpro.service.BranchService;
-import com.gearrentpro.service.BranchService.ValidationException;
-import com.gearrentpro.util.SessionManager;
+// =================== BranchController.java ===================
+package main.java.com.gearrentpro.controller;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import main.java.com.gearrentpro.entity.Branch;
+import main.java.com.gearrentpro.entity.User;
+import main.java.com.gearrentpro.service.BranchService;
 
-import java.net.URL;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.sql.SQLException;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.List;
 
-public class BranchController implements Initializable {
+public class BranchController extends JFrame {
 
-    @FXML private TableView<Branch> branchTable;
-    @FXML private TableColumn<Branch, String> colId;
-    @FXML private TableColumn<Branch, String> colName;
-    @FXML private TableColumn<Branch, String> colAddress;
-    @FXML private TableColumn<Branch, String> colContact;
-    @FXML private TableColumn<Branch, Boolean> colStatus;
+    private User loggedInUser;
+    private BranchService branchService = new BranchService();
+    private DefaultTableModel tableModel;
+    private JTable table;
 
-    @FXML private Label formTitle;
-    @FXML private TextField txtBranchId;
-    @FXML private TextField txtName;
-    @FXML private TextArea txtAddress;
-    @FXML private TextField txtContact;
-    @FXML private CheckBox chkActive;
-    @FXML private Label lblError;
+    private JTextField txtId, txtName, txtAddress, txtContact;
+    private JButton btnAdd, btnUpdate, btnDelete, btnClear;
 
-    @FXML private Button btnSave;
-    @FXML private Button btnUpdate;
-    @FXML private Button btnDelete;
-
-    private BranchService branchService;
-    private ObservableList<Branch> branchList;
-    private Branch selectedBranch;
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        branchService = new BranchService();
-        branchList = FXCollections.observableArrayList();
-
-        // Check if user is admin
-        if (!SessionManager.getInstance().isAdmin()) {
-            showError("Access denied. Admin privileges required.");
-            disableAllControls();
-            return;
-        }
-
-        setupTable();
-        loadBranches();
-        setupTableSelection();
-        generateNextId();
+    public BranchController(User user) {
+        this.loggedInUser = user;
+        setTitle("Manage Branches");
+        setSize(800, 500);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        initUI();
+        loadTable();
     }
 
-    private void setupTable() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("branchId"));
-        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
-        colContact.setCellValueFactory(new PropertyValueFactory<>("contact"));
-        
-        // Custom cell factory for status column
-        colStatus.setCellValueFactory(new PropertyValueFactory<>("active"));
-        colStatus.setCellFactory(col -> new TableCell<Branch, Boolean>() {
-            @Override
-            protected void updateItem(Boolean active, boolean empty) {
-                super.updateItem(active, empty);
-                if (empty || active == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(active ? "Active" : "Inactive");
-                    setStyle(active ? "-fx-text-fill: green;" : "-fx-text-fill: red;");
-                }
-            }
+    private void initUI() {
+        // Form panel
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createTitledBorder("Branch Details"));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 8, 5, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        txtId      = addFormRow(formPanel, gbc, 0, "Branch ID:", 10);
+        txtName    = addFormRow(formPanel, gbc, 1, "Name:", 20);
+        txtAddress = addFormRow(formPanel, gbc, 2, "Address:", 30);
+        txtContact = addFormRow(formPanel, gbc, 3, "Contact:", 15);
+
+        try { txtId.setText(branchService.generateNextId()); txtId.setEditable(false); }
+        catch (SQLException ignored) {}
+
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        btnAdd    = new JButton("Add");
+        btnUpdate = new JButton("Update");
+        btnDelete = new JButton("Delete");
+        btnClear  = new JButton("Clear");
+        btnPanel.add(btnAdd); btnPanel.add(btnUpdate); btnPanel.add(btnDelete); btnPanel.add(btnClear);
+
+        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
+        formPanel.add(btnPanel, gbc);
+
+        // Table
+        String[] cols = {"ID", "Name", "Address", "Contact"};
+        tableModel = new DefaultTableModel(cols, 0) { public boolean isCellEditable(int r, int c) { return false; } };
+        table = new JTable(tableModel);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, formPanel, new JScrollPane(table));
+        split.setDividerLocation(230);
+        add(split);
+
+        // Events
+        btnAdd.addActionListener(e -> addBranch());
+        btnUpdate.addActionListener(e -> updateBranch());
+        btnDelete.addActionListener(e -> deleteBranch());
+        btnClear.addActionListener(e -> clearForm());
+
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && table.getSelectedRow() >= 0) populateForm();
         });
-
-        branchTable.setItems(branchList);
     }
 
-    private void setupTableSelection() {
-        branchTable.getSelectionModel().selectedItemProperty().addListener(
-            (obs, oldSelection, newSelection) -> {
-                if (newSelection != null) {
-                    selectBranch(newSelection);
-                }
+    private JTextField addFormRow(JPanel panel, GridBagConstraints gbc, int row, String label, int cols) {
+        gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 1; gbc.weightx = 0;
+        panel.add(new JLabel(label), gbc);
+        gbc.gridx = 1; gbc.weightx = 1;
+        JTextField field = new JTextField(cols);
+        panel.add(field, gbc);
+        return field;
+    }
+
+    private void loadTable() {
+        tableModel.setRowCount(0);
+        try {
+            for (Branch b : branchService.getAllBranches()) {
+                tableModel.addRow(new Object[]{b.getBranchId(), b.getBranchName(), b.getAddress(), b.getContact()});
             }
-        );
+        } catch (SQLException e) { showError(e.getMessage()); }
     }
 
-    private void loadBranches() {
+    private void addBranch() {
         try {
-            branchList.clear();
-            branchList.addAll(branchService.getAllBranchesIncludingInactive());
-        } catch (SQLException e) {
-            showError("Error loading branches: " + e.getMessage());
-        }
+            Branch b = new Branch(txtId.getText().trim(), txtName.getText().trim(),
+                    txtAddress.getText().trim(), txtContact.getText().trim());
+            branchService.addBranch(b);
+            loadTable(); clearForm();
+            JOptionPane.showMessageDialog(this, "Branch added successfully.");
+        } catch (Exception e) { showError(e.getMessage()); }
     }
 
-    private void generateNextId() {
+    private void updateBranch() {
+        if (table.getSelectedRow() < 0) { showError("Select a branch to update."); return; }
         try {
-            txtBranchId.setText(branchService.generateNextId());
-        } catch (SQLException e) {
-            showError("Error generating ID: " + e.getMessage());
-        }
+            Branch b = new Branch(txtId.getText().trim(), txtName.getText().trim(),
+                    txtAddress.getText().trim(), txtContact.getText().trim());
+            branchService.updateBranch(b);
+            loadTable(); clearForm();
+            JOptionPane.showMessageDialog(this, "Branch updated.");
+        } catch (Exception e) { showError(e.getMessage()); }
     }
 
-    private void selectBranch(Branch branch) {
-        selectedBranch = branch;
-        
-        txtBranchId.setText(branch.getBranchId());
-        txtName.setText(branch.getName());
-        txtAddress.setText(branch.getAddress());
-        txtContact.setText(branch.getContact());
-        chkActive.setSelected(branch.isActive());
-
-        // Switch to edit mode
-        formTitle.setText("Edit Branch");
-        btnSave.setVisible(false);
-        btnSave.setManaged(false);
-        btnUpdate.setVisible(true);
-        btnUpdate.setManaged(true);
-        btnDelete.setVisible(true);
-        btnDelete.setManaged(true);
-
-        clearError();
-    }
-
-    @FXML
-    private void handleAddBranch() {
-        handleClear();
-    }
-
-    @FXML
-    private void handleSave() {
-        clearError();
-
-        Branch branch = new Branch();
-        branch.setBranchId(txtBranchId.getText());
-        branch.setName(txtName.getText().trim());
-        branch.setAddress(txtAddress.getText().trim());
-        branch.setContact(txtContact.getText().trim());
-        branch.setActive(chkActive.isSelected());
-
-        try {
-            branchService.saveBranch(branch);
-            showSuccess("Branch saved successfully!");
-            loadBranches();
-            handleClear();
-        } catch (ValidationException e) {
-            showError(e.getMessage());
-        } catch (SQLException e) {
-            showError("Database error: " + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void handleUpdate() {
-        if (selectedBranch == null) {
-            showError("No branch selected");
-            return;
-        }
-
-        clearError();
-
-        selectedBranch.setName(txtName.getText().trim());
-        selectedBranch.setAddress(txtAddress.getText().trim());
-        selectedBranch.setContact(txtContact.getText().trim());
-        selectedBranch.setActive(chkActive.isSelected());
-
-        try {
-            branchService.updateBranch(selectedBranch);
-            showSuccess("Branch updated successfully!");
-            loadBranches();
-            handleClear();
-        } catch (ValidationException e) {
-            showError(e.getMessage());
-        } catch (SQLException e) {
-            showError("Database error: " + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void handleDelete() {
-        if (selectedBranch == null) {
-            showError("No branch selected");
-            return;
-        }
-
-        // Confirmation dialog
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirm Delete");
-        alert.setHeaderText("Delete Branch");
-        alert.setContentText("Are you sure you want to delete branch: " + selectedBranch.getName() + "?");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+    private void deleteBranch() {
+        if (table.getSelectedRow() < 0) { showError("Select a branch to delete."); return; }
+        int confirm = JOptionPane.showConfirmDialog(this, "Delete this branch?", "Confirm", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
             try {
-                branchService.deleteBranch(selectedBranch.getBranchId());
-                showSuccess("Branch deleted successfully!");
-                loadBranches();
-                handleClear();
-            } catch (ValidationException e) {
-                showError(e.getMessage());
-            } catch (SQLException e) {
-                showError("Database error: " + e.getMessage());
-            }
+                branchService.deleteBranch(txtId.getText().trim());
+                loadTable(); clearForm();
+                JOptionPane.showMessageDialog(this, "Branch deleted.");
+            } catch (Exception e) { showError(e.getMessage()); }
         }
     }
 
-    @FXML
-    private void handleClear() {
-        selectedBranch = null;
-        
-        generateNextId();
-        txtName.clear();
-        txtAddress.clear();
-        txtContact.clear();
-        chkActive.setSelected(true);
-
-        // Switch to add mode
-        formTitle.setText("Add New Branch");
-        btnSave.setVisible(true);
-        btnSave.setManaged(true);
-        btnUpdate.setVisible(false);
-        btnUpdate.setManaged(false);
-        btnDelete.setVisible(false);
-        btnDelete.setManaged(false);
-
-        branchTable.getSelectionModel().clearSelection();
-        clearError();
+    private void populateForm() {
+        int row = table.getSelectedRow();
+        txtId.setText((String) tableModel.getValueAt(row, 0));
+        txtName.setText((String) tableModel.getValueAt(row, 1));
+        txtAddress.setText((String) tableModel.getValueAt(row, 2));
+        txtContact.setText((String) tableModel.getValueAt(row, 3));
     }
 
-    private void showError(String message) {
-        lblError.setText(message);
-        lblError.setStyle("-fx-text-fill: red;");
+    private void clearForm() {
+        try { txtId.setText(branchService.generateNextId()); } catch (SQLException ignored) {}
+        txtName.setText(""); txtAddress.setText(""); txtContact.setText("");
+        table.clearSelection();
     }
 
-    private void showSuccess(String message) {
-        lblError.setText(message);
-        lblError.setStyle("-fx-text-fill: green;");
-    }
-
-    private void clearError() {
-        lblError.setText("");
-    }
-
-    private void disableAllControls() {
-        txtName.setDisable(true);
-        txtAddress.setDisable(true);
-        txtContact.setDisable(true);
-        chkActive.setDisable(true);
-        btnSave.setDisable(true);
+    private void showError(String msg) {
+        JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
+
