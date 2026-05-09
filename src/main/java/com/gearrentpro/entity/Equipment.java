@@ -1,7 +1,6 @@
-package com.gearrentpro.entity;
+package main.java.com.gearrentpro.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 public class Equipment {
     private String equipmentId;
@@ -12,37 +11,26 @@ public class Equipment {
     private int purchaseYear;
     private BigDecimal dailyBasePrice;
     private BigDecimal securityDeposit;
-    private EquipmentStatus status;
-    private String description;
-    private LocalDateTime createdAt;
-
-    // For display purposes (joined data)
+    private String status;
     private String categoryName;
     private String branchName;
 
-    public enum EquipmentStatus {
-        AVAILABLE("Available"),
-        RESERVED("Reserved"),
-        RENTED("Rented"),
-        UNDER_MAINTENANCE("Under Maintenance");
+    public Equipment() {}
 
-        private final String displayName;
-
-        EquipmentStatus(String displayName) {
-            this.displayName = displayName;
-        }
-
-        public String getDisplayName() {
-            return displayName;
-        }
+    public Equipment(String equipmentId, String categoryId, String branchId, String brand,
+                     String model, int purchaseYear, BigDecimal dailyBasePrice,
+                     BigDecimal securityDeposit, String status) {
+        this.equipmentId = equipmentId;
+        this.categoryId = categoryId;
+        this.branchId = branchId;
+        this.brand = brand;
+        this.model = model;
+        this.purchaseYear = purchaseYear;
+        this.dailyBasePrice = dailyBasePrice;
+        this.securityDeposit = securityDeposit;
+        this.status = status;
     }
 
-    // Constructors
-    public Equipment() {
-        this.status = EquipmentStatus.AVAILABLE;
-    }
-
-    // Getters and Setters
     public String getEquipmentId() { return equipmentId; }
     public void setEquipmentId(String equipmentId) { this.equipmentId = equipmentId; }
 
@@ -67,14 +55,8 @@ public class Equipment {
     public BigDecimal getSecurityDeposit() { return securityDeposit; }
     public void setSecurityDeposit(BigDecimal securityDeposit) { this.securityDeposit = securityDeposit; }
 
-    public EquipmentStatus getStatus() { return status; }
-    public void setStatus(EquipmentStatus status) { this.status = status; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public String getCategoryName() { return categoryName; }
     public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
@@ -82,13 +64,6 @@ public class Equipment {
     public String getBranchName() { return branchName; }
     public void setBranchName(String branchName) { this.branchName = branchName; }
 
-    // Helper method for display
-    public String getFullName() {
-        return brand + " " + model;
-    }
-
     @Override
-    public String toString() {
-        return brand + " " + model + " (" + equipmentId + ")";
-    }
+    public String toString() { return brand + " " + model; }
 }
