@@ -1,46 +1,56 @@
-package com.gearrentpro.util;
+package main.java.com.gearrentpro.util;
 
-import com.gearrentpro.entity.User;
+import main.java.com.gearrentpro.entity.User;
 
 public class SessionManager {
-    
+
     private static SessionManager instance;
-    private User currentUser;
-    
+    private User loggedInUser;
+
     private SessionManager() {}
-    
+
     public static SessionManager getInstance() {
         if (instance == null) {
             instance = new SessionManager();
         }
         return instance;
     }
-    
-    public User getCurrentUser() {
-        return currentUser;
+
+    public void setLoggedInUser(User user) {
+        this.loggedInUser = user;
     }
-    
-    public void setCurrentUser(User user) {
-        this.currentUser = user;
+
+    public User getLoggedInUser() {
+        return loggedInUser;
     }
-    
-    public void clearSession() {
-        this.currentUser = null;
+
+    public String getUserRole() {
+        if (loggedInUser != null) {
+            return loggedInUser.getRole();
+        }
+        return null;
     }
-    
+
+    public String getUserBranchId() {
+        if (loggedInUser != null) {
+            return loggedInUser.getBranchId();
+        }
+        return null;
+    }
+
     public boolean isAdmin() {
-        return currentUser != null && currentUser.getRole() == User.UserRole.ADMIN;
+        return "Admin".equals(getUserRole());
     }
-    
+
     public boolean isBranchManager() {
-        return currentUser != null && currentUser.getRole() == User.UserRole.BRANCH_MANAGER;
+        return "Branch Manager".equals(getUserRole());
     }
-    
+
     public boolean isStaff() {
-        return currentUser != null && currentUser.getRole() == User.UserRole.STAFF;
+        return "Staff".equals(getUserRole());
     }
-    
-    public String getCurrentBranchId() {
-        return currentUser != null ? currentUser.getBranchId() : null;
+
+    public void logout() {
+        loggedInUser = null;
     }
 }
